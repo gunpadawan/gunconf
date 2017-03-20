@@ -32,11 +32,64 @@ To let any user access the device, do:
 
 
 ## Launch
-To launch application, you can execute utils/gunconf.sh
+To launch application, you can execute `utils/gunconf.sh`
 
 For retropie users, you can add the app to the retropie menu by simply copying that file:
 
-`scp utils/gunconf.sh pi@<your_pi_IP>:/home/pi/RetroPie/retropiemenu/`
+`sudo cp utils/gunconf.sh /home/pi/RetroPie/retropiemenu/`
+
+
+# [Advancemame](http://www.advancemame.it/download)
+
+So far advancemame is the only emulator that has been successfully tested.
+
+download advmame >=3.4 (does not work for sure with prior versions)
+
+## Configuration
+
+edit `~/.advance/advmame.rc`
+
+set the following:
+
+`device_mouse none` to disable the support for mouse **even if the gun is configured to report as a mouse**
+
+`device joystick event` to ask advmame to use linux event interface
+
+Next you need to configure the gun itself, especially the different axes.
+For player 1 you need to find the right value for `input_map[p1_lightgunx]` and `input_map[p1_lightguny]`
+
+Assuming you have configured the gun to use device ID 0x1601, the configuration is:
+
+`input_map[p1_lightgunx] joystick[d209_1601_2,0,0]`
+
+`input_map[p1_lightguny] joystick[d209_1601_2,0,1]`
+
+* d209 is the usb vendorId of the gun (fixed value)
+* 1601 is the usb productId
+* 2 is the usb device interface (fixed value)
+
+Then configure the trigger.
+
+`input_map[p1_button1] joystick_button[d209_1601,0]`
+
+
+for more details you can read the [advmame](http://www.advancemame.it/doc-advmame#8.9.5) doc
+
+## Test
+
+From there you should be able to start the emulator and test.
+
+Assuming you own a rom called duckhunt
+
+make sure you have `~/.advance/rom/duckhunt.zip`
+
+launch `advmame duckhunt`
+
+the crosshair should now move on the screen.
+
+Start calibration with the button you have configured for that purpose in gunconf
+
+In the menu, you can configure a key or button to toggle crosshair display
 
 
 # Known limitations
