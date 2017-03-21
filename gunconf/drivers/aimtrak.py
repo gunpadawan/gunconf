@@ -167,7 +167,7 @@ if __name__ == '__main__':
 
     #cnf.update(tstCfg)
 
-    #disconnect = gun.setConfig(cnf)
+    disconnect = gun.setConfig(cnf)
     #import IPython; IPython.embed() # XXX BREAKPOINT
 
 
