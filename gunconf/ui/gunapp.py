@@ -191,6 +191,8 @@ class GunApp(gui.Desktop):
 
     def save(self, _):
         """ save configuration """
+        # disable buttons
+        self._cv.enableBtns(False)
         # retrieve controler configuration
         config = self._ctrl.get('config')
         # update it with configuration from configuration view
@@ -199,8 +201,6 @@ class GunApp(gui.Desktop):
         self._ctrl.set('config', config)
         # adk controler to configure gun
         self._ctrl.configure()
-
-        # TODO: disable commands
 
 
     def startCal(self, _):
@@ -220,6 +220,9 @@ class GunApp(gui.Desktop):
 
     def recoil(self, _):
         """ test recoil """
+        # disable buttons
+        self._cv.enableBtns(False)
+        self._ctrl.set('recoil', self._cv.recoilSl.value)
         self._ctrl.recoil()
 
 
@@ -323,6 +326,7 @@ class GunApp(gui.Desktop):
         # loading complete
         elif 'loaded'==pTrans and 'waiting'==pState:
             # set config panel
+            self._cv.enableBtns(True)
             self._configuring(self._ctrl.get('config'))
         elif 'irtest'==pTrans and 'irtesting'==pState:
             # forward event to sensorview
@@ -330,8 +334,9 @@ class GunApp(gui.Desktop):
         elif 'calibrate'==pTrans and 'calibrating'==pState:
             # forward event to widget
             self._calWn.gunPos = self._ctrl.get('gunPos')
-        elif 'configured'==pTrans and 'waiting'==pState:
-            print "TODO: restore controls"
+        elif 'waiting'==pState and \
+            'configured'==pTrans or 'recoiled'==pTrans:
+            self._cv.enableBtns(True)
         elif 'reboot'==pTrans and 'disconnecting'==pState:
             self.disconnecting(True)
             # wait 15 scans (for the device to reboot)
