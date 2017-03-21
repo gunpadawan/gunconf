@@ -109,8 +109,9 @@ class Aimtrak(object):
 
 
     def recoil(self):
-        """ ask for recoil """
         self._setReport([0x5C, 0xEE])
+        # we lose the gun if we don't sleep here
+        time.sleep(0.5)
 
 
     def getDynData(self):
@@ -144,7 +145,29 @@ if __name__ == '__main__':
 
     #cnf['joystick'] = False
 
-    disconnect = gun.setConfig(cnf)
+    #tstCfg = {'irGain'      : 1,
+    #          'autoGain'    : False,
+    #          'calDelay'    : 5,
+    #          'recoil'      : 100,
+    #          'joystick'    : False,
+    #          'tilt'        : 'continuous',
+    #          'offActTrig'  : 'left',
+    #          'onActTrig'   : 'left',
+    #          'offActLeft'  : 'middle',
+    #          'onActLeft'   : 'middle',
+    #          'offActRight' : 'right',
+    #          'onActRight'  : 'right',
+    #          'onCalTrig'   : False,
+    #          'offCalTrig'  : False,
+    #          'onCalLeft'   : True,
+    #          'offCalLeft'  : True,
+    #          'onCalRight'  : True,
+    #          'offCalRight' : True,
+    #          'idProduct'   : 0x1601}
+
+    #cnf.update(tstCfg)
+
+    #disconnect = gun.setConfig(cnf)
     #import IPython; IPython.embed() # XXX BREAKPOINT
 
 

@@ -42,7 +42,7 @@ gStateTrans  = {'scanning' :      {'connect': ('connecting', False), \
                                  'calibrate': ('calibrating', False) \
                                  }, \
                 \
-               'recoiling' :    {'wait': ('waiting', False) \
+               'recoiling' :    {'recoiled': ('waiting', True) \
                                  }, \
                  \
                 'inerror' :     {'disconnected': ('scanning', True) \
@@ -193,8 +193,23 @@ class Controler(Thread):
 
 
     def state_recoiling(self):
+        """ test recoil """
+        # store current value
+        cnf = self._gun.getConfig()
+        oldVal = cnf['recoil']
+
+        # set value to test
+        cnf['recoil'] = self.get('recoil')
+        self._gun.setConfig(cnf)
+
+        # ask for recoil
         self._gun.recoil()
-        return 'wait'
+
+        # restore old value
+        cnf['recoil'] = oldVal
+        self._gun.setConfig(cnf)
+
+        return 'recoiled'
 
 
     def state_irtesting(self):
