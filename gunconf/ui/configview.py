@@ -52,6 +52,7 @@ class ConfigView(object):
         recoilTbl.td(self.recoilSl)
         button = gui.Button(_('Test'))
         button.connect(gui.CLICK, pApp.recoil, None)
+        self._testBtn = button
         recoilTbl.td(button)
 
         ## IR gain
@@ -158,6 +159,7 @@ class ConfigView(object):
         ## button save
         saveBtn = gui.Button(_('Save Configuration'))
         saveBtn.connect(gui.CLICK, pApp.save, None)
+        self._saveBtn = saveBtn
 
         dcntBtn = gui.Button(_('Disconnect'))
         dcntBtn.connect(gui.CLICK, pApp.disconnect, None)
@@ -241,3 +243,8 @@ class ConfigView(object):
 
         return config
 
+
+    def enableBtns(self, enable):
+        """ enable/disable buttons """
+        self._saveBtn.disabled = not enable
+        self._testBtn.disabled = not enable
