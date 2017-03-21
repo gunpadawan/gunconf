@@ -7,6 +7,9 @@ It is tested on ubuntu desktop and retropie.
 
 Written in python on top of pygame, it **does not require an x server.**
 
+![Configuration Panel](https://cloud.githubusercontent.com/assets/26297080/24149019/6d1c3e8c-0e41-11e7-9c4a-487cccceae75.png)
+![Sensor View Panel](https://cloud.githubusercontent.com/assets/26297080/24149020/6d1ca76e-0e41-11e7-99a7-039bf5685bf6.png)
+
 
 # Install
 ## Prerequisites
