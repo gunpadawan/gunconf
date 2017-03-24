@@ -77,7 +77,7 @@ class Controler(Thread):
 
         # add 'session' variables
         self._infos     = defaultdict(lambda:None)
-        self._name      = None
+        self._toRead    = []
         self._gun       = None
 
 
@@ -86,7 +86,7 @@ class Controler(Thread):
             self._gun.close()
 
         self._gun       = None
-        self._name      = None
+        self._toRead[:] = []
 
         with self._lock:
             self._infos.clear()
@@ -146,29 +146,39 @@ class Controler(Thread):
     ######################################################
 
     def state_scanning(self):
-        nbDevs = self._mouses.scan(Aimtrak.vendorId)
+        self._evdevs = self._mouses.scan(Aimtrak.vendorId)
         # aimtrak has 2 input interfaces per device: --> /2
-        self.set('nbDevs', nbDevs/2)
+        self.set('nbDevs', len(self._evdevs)/2)
         time.sleep(0.1)
         return 'scan'
 
 
     def state_connecting(self):
-        self._name , _ = self._mouses.read()
-        if not self._name:
+        name , _ = self._mouses.read()
+        if not name:
             time.sleep(1.0/50)
             return 'connect'
+
+        # append device to read list
+        self._toRead.append(name)
         return 'connected'
 
 
     def state_loading(self):
+        """ connect to gun and retrieve configuration """
         # get usb id and address using udev
-        udev        = pyudev.Context()
-        dev         = pyudev.Device.from_device_file(udev, self._name)
-        parent      = dev.find_parent('usb','usb_device')
+        name = self._toRead[0] # we have only 1 device so far
+        busId, address = self._parentInfo(name)
 
-        busId       = int(parent['BUSNUM'])
-        address     = int(parent['DEVNUM'])
+        # now let's find the other input device
+        for oNm in self._evdevs:
+            if oNm is not name:
+                oBusId, oAddress = self._parentInfo(oNm)
+                if oBusId == busId and oAddress == address:
+                    self._toRead.append(oNm)
+                    break
+
+        self._l.info('input device to read are: %s', self._toRead)
 
         self._gun   = Aimtrak(busId, address)
         cnf         = self._gun.getConfig()
@@ -227,10 +237,12 @@ class Controler(Thread):
 
     def state_calibrating(self):
         """ retrieve mouse position """
-        pos = self._mouses.update(self._name)
-        if len(pos):
-            self.set('gunPos', pos)
-            self._l.debug('gun controls : %s', pos)
+
+        for nm in self._toRead:
+            pos = self._mouses.update(nm)
+            if len(pos):
+                self.set('gunPos', pos)
+                self._l.debug('gun controls : %s', pos)
 
         time.sleep(1.0/50)
         return 'calibrate'
@@ -252,6 +264,18 @@ class Controler(Thread):
                     'configure', 'recoil'):
             return lambda : self.transit(name)
         raise AttributeError
+
+
+    def _parentInfo(self, name):
+        """ return usb info of device """
+        udev        = pyudev.Context()
+        dev         = pyudev.Device.from_device_file(udev, name)
+        parent      = dev.find_parent('usb','usb_device')
+
+        busId       = int(parent['BUSNUM'])
+        address     = int(parent['DEVNUM'])
+
+        return (busId, address)
 
 
 if __name__ == '__main__':

@@ -83,7 +83,9 @@ class GunApp(gui.Desktop):
         # init joysticks
         pygame.joystick.init()
         for x in range(pygame.joystick.get_count()):
-            pygame.joystick.Joystick(x).init()
+            jtk = pygame.joystick.Joystick(x)
+            if 'Ultimarc Ultimarc' != jtk.get_name():
+                pygame.joystick.Joystick(x).init()
 
         # rollback to SD res if needed
         if 720 >= pygame.display.Info().current_h:

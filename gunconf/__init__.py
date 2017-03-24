@@ -3,7 +3,7 @@ import logging
 import os
 
 
-version_info = (0, 1, 0, 'rc2')
+version_info = (0, 2, 0, 'rc2')
 __version__ = '%d.%d.%d%s' % version_info
 
 aimtrak_version_info = (9, 19)

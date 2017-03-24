@@ -1,4 +1,6 @@
 def action_from_value(pValue):
+    if 0x90 <= pValue <= 0x97:
+        return 'button%d' % (pValue-0x90)
     if 0x98 == pValue:
         return 'left'
     if 0x99 == pValue:
@@ -9,6 +11,9 @@ def action_from_value(pValue):
 
 
 def action_to_value(pAction):
+    if pAction.startswith('button'):
+        print "button id ", int(pAction[len('button'):])
+        return 0x90+int(pAction[len('button'):])
     if 'left'==pAction:
         return 0x98
     if 'right'==pAction:

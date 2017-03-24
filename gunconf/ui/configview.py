@@ -1,14 +1,43 @@
 from pgu import gui
 
+_transDct= {'left'   : 'button0',
+            'middle' : 'button1',
+            'right'  : 'button2',
+            'button0': 'left',
+            'button1': 'middle',
+            'button2': 'right',
+            'button3': 'right',
+            'button4': 'right',
+            'button5': 'right',
+            'button6': 'right',
+            'button7': 'right',
+            None     : None}
+
+
 def _slChange((sl, input)):
     input.value = sl.value
 
 
+def _fillSlt(slt, joystick=False):
+    val = _transDct[slt.value]
+
+    slt.options.clear()
+    slt.firstOption = None
+    slt.values[:] = []
+
+    if joystick:
+        for i in xrange(8):
+            slt.add(_('Button')+('%d'%(i,)), 'button%d'%(i,))
+    else:
+        slt.add(_('Left'), 'left')
+        slt.add(_('Middle'), 'middle')
+        slt.add(_('Right'), 'right')
+
+    slt.value = val
+
+
 def _buildSltCb(tt):
     slt = gui.Select()
-    slt.add(_('Left'), 'left')
-    slt.add(_('Middle'), 'middle')
-    slt.add(_('Right'), 'right')
     tt.td(slt)
     chkbox = gui.Switch()
     tt.td(chkbox)
@@ -149,12 +178,15 @@ class ConfigView(object):
         jtkTbl = gui.Table(width=pSize['w']/3)
         jtkTbl.tr()
         rad = gui.Radio(self.mjGrp, value='joystick')
-        # we don't support joystick yet
-        rad.disabled = True
+        rad.connect(gui.CLICK, self._changeDevType, True)
         jtkTbl.td(rad)
         jtkTbl.td(gui.Label(_('Emulate Joystick')))
-        jtkTbl.td(gui.Radio(self.mjGrp, value='mouse'))
+        rad = gui.Radio(self.mjGrp, value='mouse')
+        rad.connect(gui.CLICK, self._changeDevType, False)
+        jtkTbl.td(rad)
         jtkTbl.td(gui.Label(_('Emulate Mouse')))
+
+        self._curSel = None
 
         ## button save
         saveBtn = gui.Button(_('Save Configuration'))
@@ -190,12 +222,16 @@ class ConfigView(object):
         self.widget = tbl
 
 
+
     def setConfig(self, config):
         """ set configuration to use """
         self.irGainSl.value         = config['irGain']
         self.calDlSl.value          = config['calDelay']
         self.recoilSl.value         = config['recoil']
         self.mjGrp.value        = 'joystick' if config['joystick'] else 'mouse'
+        # make sure previous line calls callback on panel
+        self._changeDevType(config['joystick'])
+
         self.tiltGrp.value          = config['tilt']
 
         self.offCalTrigCb.value     = config['offCalTrig']
@@ -235,7 +271,7 @@ class ConfigView(object):
         config['onActTrig']     = self.onActTrigSlt.value
         config['offActLeft']    = self.offActLeftSlt.value
         config['onActLeft']     = self.onActLeftSlt.value
-        config['offACtRight']   = self.offActRightSlt.value
+        config['offActRight']   = self.offActRightSlt.value
         config['onActRight']    = self.onActRightSlt.value
 
         config['autoGain']      = not self.autoGainSw.value
@@ -248,3 +284,17 @@ class ConfigView(object):
         """ enable/disable buttons """
         self._saveBtn.disabled = not enable
         self._testBtn.disabled = not enable
+
+
+    def _changeDevType(self, joystick):
+        if self._curSel is not None and self._curSel == joystick:
+            return
+        self._curSel = joystick
+
+        # change button names left->button0
+        _fillSlt(self.onActTrigSlt, joystick)
+        _fillSlt(self.offActTrigSlt, joystick)
+        _fillSlt(self.onActLeftSlt, joystick)
+        _fillSlt(self.offActLeftSlt, joystick)
+        _fillSlt(self.onActRightSlt, joystick)
+        _fillSlt(self.offActRightSlt, joystick)

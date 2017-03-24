@@ -97,4 +97,3 @@ In the menu, you can configure a key or button to toggle crosshair display
 
 # Known limitations
 * does not support firmware update (you need a windows host for that...)
-* does not support joystick configuration

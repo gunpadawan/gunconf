@@ -29,7 +29,7 @@ class AbsMouseManager(object):
 
         self._l.info("found %d devices" % (len(self._devs)))
 
-        return len(self._devs)
+        return self._devs.keys()
 
 
     def read(self, name=None):
