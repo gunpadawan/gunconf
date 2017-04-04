@@ -14,7 +14,7 @@ Written in python on top of pygame, it **does not require an x server.**
 # Install
 ## Prerequisites
 
-`sudo apt install apt-transport-https python-dev python-pygame`
+`sudo apt install apt-transport-https python-dev python-pygame python-setuptools`
 
 ## Get the source
 `git clone <repo>/gunconf.git`
