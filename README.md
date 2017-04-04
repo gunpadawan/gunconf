@@ -22,7 +22,7 @@ Written in python on top of pygame, it **does not require an x server.**
 ## Install python module
 `cd gunconf`
 
-`python setup.py install`
+`sudo python setup.py install`
 
 ## Udev rules
 Application requires access to the aimtrak usb device. It is usually necessary to configure udev to let your specific user access that device.
