@@ -73,7 +73,7 @@ Assuming you have configured the gun to use device ID 0x1601, the configuration 
 
 Then configure the trigger.
 
-`input_map[p1_button1] joystick_button[d209_1601,0]`
+`input_map[p1_button1] joystick_button[d209_1601_2,0]`
 
 
 for more details you can read the [advmame](http://www.advancemame.it/doc-advmame#8.9.5) doc
