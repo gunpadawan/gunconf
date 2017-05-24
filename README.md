@@ -94,6 +94,27 @@ Start calibration with the button you have configured for that purpose in guncon
 
 In the menu, you can configure a key or button to toggle crosshair display
 
+# [Daphne](http://www.daphne-emu.com)
+
+Since my best shooting games run only on daphne, I have added (initial) aimtrak support to that emulator.
+It's not that straightforward for now but if you want to give it a try on retropie:
+
+connect to your pi through ssh:
+
+`cd ~/RetroPie-Setup/scriptmodules/emulators`
+
+`mv daphne.sh daphne.sh.bak`
+
+`wget "https://raw.githubusercontent.com/gunpadawan/RetroPie-Setup/master/scriptmodules/emulators/daphne.sh"`
+
+launch Retropie-Setup from the retropie menu and install daphne emulator from source
+
+then you need to start the game using a command like:
+
+`sudo /opt/retropie/emulators/daphne/daphne.bin singe vldp -noserversend -framefile ~/RetroPie/roms/daphne/lbh/frame-lbh-cdrom.txt -script ~/RetroPie/roms/daphne/lbh/cdrom-lbh.singe`
+
 
 # Known limitations
 * does not support firmware update (you need a windows host for that...)
+
+
