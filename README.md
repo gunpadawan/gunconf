@@ -109,9 +109,22 @@ connect to your pi through ssh:
 
 launch Retropie-Setup from the retropie menu and install daphne emulator from source
 
-then you need to start the game using a command like:
+then you need to add a game in `/home/pi/RetroPie/roms/daphne`. 
 
-`sudo /opt/retropie/emulators/daphne/daphne.bin singe vldp -noserversend -framefile ~/RetroPie/roms/daphne/lbh/frame-lbh-cdrom.txt -script ~/RetroPie/roms/daphne/lbh/cdrom-lbh.singe`
+To be recognized by emulation station, your game needs to be in a directory ending with ".daphne"
+
+at start, daphne.sh will read the content of a file in that directory named \<game\>.commands.
+
+As an example, let's assume we have a game called Last_Bounty_Hunter:
+
+1/ Add your game files in the `/home/pi/RetroPie/roms/daphne/Last_Bounty_Hunter.daphne` directory 
+
+2/ Edit the file named `/home/pi/RetroPie/roms/daphne/Last_Bounty_Hunter.daphne/Last_Bounty_Hunter.daphne`
+
+
+and add parameters like this: `singe vldp -framefile ./frame-lbh-cdrom.txt -script ./cdrom-lbh.singe`
+
+refer to daphne doc for further information on parameters
 
 
 # Known limitations
